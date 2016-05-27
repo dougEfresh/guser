@@ -1,7 +1,7 @@
 package guser
 
 import (
-	"github.com/dougEfresh/gtoggl/test"
+	"github.com/dougEfresh/gtest"
 	"os"
 	"testing"
 )

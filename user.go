@@ -2,7 +2,7 @@ package guser
 
 import (
 	"encoding/json"
-	"github.com/dougEfresh/gtoggl"
+	"gopkg.in/dougEfresh/gtoggl.v8"
 )
 
 // Toggl User Definition

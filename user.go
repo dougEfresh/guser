@@ -2,7 +2,7 @@ package guser
 
 import (
 	"encoding/json"
-	"gopkg.in/dougEfresh/gtoggl.v8"
+	"gopkg.in/dougEfresh/toggl-http-client.v8"
 )
 
 // Toggl User Definition
@@ -33,25 +33,19 @@ const MeWithRelatedData = "/me?with_related_data=true"
 //Return a UserClient. An error is also returned when some configuration option is invalid
 //    thc,err := gtoggl.NewClient("token")
 //    uc,err := guser.NewClient(thc)
-func NewClient(thc *gtoggl.TogglHttpClient, options ...ClientOptionFunc) (*UserClient, error) {
+func NewClient(thc *ghttp.TogglHttpClient, options ...ClientOptionFunc) *UserClient {
 	tc := &UserClient{
 		thc: thc,
-	}
-	// Run the options on it
-	for _, option := range options {
-		if err := option(tc); err != nil {
-			return nil, err
-		}
 	}
 	tc.endpoint = thc.Url + Endpoint
 	tc.signupEndpoint = thc.Url + SignupEndpoint
 	tc.resetEndpoint = thc.Url + ResetEndpoint
 	tc.relatedEndpoint = thc.Url + MeWithRelatedData
-	return tc, nil
+	return tc
 }
 
 type UserClient struct {
-	thc             *gtoggl.TogglHttpClient
+	thc             *ghttp.TogglHttpClient
 	endpoint        string
 	resetEndpoint   string
 	signupEndpoint  string
@@ -97,7 +91,7 @@ func userResponse(response *json.RawMessage, error error) (*User, error) {
 	if error != nil {
 		return nil, error
 	}
-	var tResp gtoggl.TogglResponse
+	var tResp ghttp.TogglResponse
 	err := json.Unmarshal(*response, &tResp)
 	if err != nil {
 		return nil, err

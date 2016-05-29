@@ -2,24 +2,18 @@ package guser
 
 import (
 	"github.com/dougEfresh/toggl-test"
-	"os"
 	"testing"
 )
 
-var _, debugMode = os.LookupEnv("GTOGGL_TEST_DEBUG")
 
-func togglClient() *UserClient {
-	tu := &gtest.TestUtil{Debug: debugMode}
-	client := tu.MockClient()
-	ws, err := NewClient(client)
-	if err != nil {
-		panic(err)
-	}
-	return ws
+func togglClient(t *testing.T) *UserClient {
+	tu := &gtest.TestUtil{}
+	client := tu.MockClient(t)
+	return NewClient(client)
 }
 
 func TestUserCreate(t *testing.T) {
-	tClient := togglClient()
+	tClient := togglClient(t)
 	nc, err := tClient.Create("signup@blah.com", "StrongPasswrod", "UTC")
 	if err != nil {
 		t.Fatal(err)
@@ -39,7 +33,7 @@ func TestUserCreate(t *testing.T) {
 }
 
 func TestUserUpdate(t *testing.T) {
-	tClient := togglClient()
+	tClient := togglClient(t)
 	c := &User{Id: 1, FullName: "John Swift", Email: "newemail@swift.com"}
 	nc, err := tClient.Update(c)
 	if err != nil {
@@ -52,7 +46,7 @@ func TestUserUpdate(t *testing.T) {
 }
 
 func TestUserReset(t *testing.T) {
-	tClient := togglClient()
+	tClient := togglClient(t)
 	token, err := tClient.ResetToken()
 	if err != nil {
 		t.Fatal(err)
@@ -64,7 +58,7 @@ func TestUserReset(t *testing.T) {
 }
 
 func TestUserGet(t *testing.T) {
-	tClient := togglClient()
+	tClient := togglClient(t)
 
 	client, err := tClient.Get(false)
 	if err != nil {
@@ -84,13 +78,5 @@ func TestUserGet(t *testing.T) {
 
 	if client.Email != "johnt@swift.com" {
 		t.Error("!= johnt@swift.com" + client.Email)
-	}
-}
-
-func BenchmarkClientTransport_Get(b *testing.B) {
-	b.ReportAllocs()
-	tClient := togglClient()
-	for i := 0; i < b.N; i++ {
-		tClient.Get(false)
 	}
 }

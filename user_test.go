@@ -5,7 +5,6 @@ import (
 	"testing"
 )
 
-
 func togglClient(t *testing.T) *UserClient {
 	tu := &gtest.TestUtil{}
 	client := tu.MockClient(t)

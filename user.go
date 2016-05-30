@@ -33,7 +33,7 @@ const MeWithRelatedData = "/me?with_related_data=true"
 //Return a UserClient. An error is also returned when some configuration option is invalid
 //    thc,err := gtoggl.NewClient("token")
 //    uc,err := guser.NewClient(thc)
-func NewClient(thc *ghttp.TogglHttpClient, options ...ClientOptionFunc) *UserClient {
+func NewClient(thc *ghttp.TogglHttpClient) *UserClient {
 	tc := &UserClient{
 		thc: thc,
 	}
@@ -58,22 +58,14 @@ func (c *UserClient) Get(realatedData bool) (*User, error) {
 
 func (c *UserClient) Create(email, password, timezone string) (*User, error) {
 	up := &UserCreate{Password: password, Email: email, Timezone: timezone, CreatedWith: "gtoggl"}
-	put := createRequest{User: up}
-	body, err := json.Marshal(put)
-	if err != nil {
-		return nil, err
-	}
-	return userResponse(c.thc.PostRequest(c.signupEndpoint, body))
+	put := map[string]interface{}{"user":up}
+	return userResponse(c.thc.PostRequest(c.signupEndpoint, put))
 }
 
 func (c *UserClient) Update(u *User) (*User, error) {
 	up := &UserUpdate{FullName: u.FullName, Email: u.Email}
-	put := updateRequest{User: up}
-	body, err := json.Marshal(put)
-	if err != nil {
-		return nil, err
-	}
-	return userResponse(c.thc.PutRequest(c.endpoint, body))
+	put := map[string]interface{}{"user":up}
+	return userResponse(c.thc.PutRequest(c.endpoint, put))
 }
 
 func (c *UserClient) ResetToken() (string, error) {
@@ -102,24 +94,4 @@ func userResponse(response *json.RawMessage, error error) (*User, error) {
 		return nil, err
 	}
 	return &u, err
-}
-
-//Configures a Client.
-/*
-    func SetURL(url string) ToggleClientOptionFunc {
-	return func(c *TogglClient) error {
-	    c.Url = url
-	}
-    }
-*/
-type ClientOptionFunc func(*UserClient) error
-
-type request struct {
-	Data User `json:"data"`
-}
-type updateRequest struct {
-	User *UserUpdate `json:"user"`
-}
-type createRequest struct {
-	User *UserCreate `json:"user"`
 }

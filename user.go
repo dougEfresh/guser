@@ -58,13 +58,13 @@ func (c *UserClient) Get(realatedData bool) (*User, error) {
 
 func (c *UserClient) Create(email, password, timezone string) (*User, error) {
 	up := &UserCreate{Password: password, Email: email, Timezone: timezone, CreatedWith: "gtoggl"}
-	put := map[string]interface{}{"user":up}
+	put := map[string]interface{}{"user": up}
 	return userResponse(c.thc.PostRequest(c.signupEndpoint, put))
 }
 
 func (c *UserClient) Update(u *User) (*User, error) {
 	up := &UserUpdate{FullName: u.FullName, Email: u.Email}
-	put := map[string]interface{}{"user":up}
+	put := map[string]interface{}{"user": up}
 	return userResponse(c.thc.PutRequest(c.endpoint, put))
 }
 

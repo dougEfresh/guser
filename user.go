@@ -11,6 +11,7 @@ type User struct {
 	ApiToken string `json:"api_token"`
 	Email    string `json:"email"`
 	FullName string `json:"fullname"`
+	Timezone string `json:"timezone"`
 }
 type UserUpdate struct {
 	Email    string `json:"email"`
